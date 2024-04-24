@@ -1,0 +1,34 @@
+service: serstock-backend
+
+plugins:
+  - 'serverless-plugin-typescript'  
+  - serverless-plugin-optimize
+  - serverless-offline
+  # - serverless-plugin-warmup
+
+# custom:
+#   # Enable warmup on all functions (only for production and staging)
+#   warmup:      
+#       - production
+#       - staging
+
+provider:
+  name: aws
+  region: eu-central-1
+  runtime: nodejs20.x
+  memorySize: 128 
+  timeout: 5
+  tracing:
+    lambda: true
+ 
+
+package:
+  individually: true
+
+functions:
+  main:
+    handler: src/lambda.handler
+    events:
+      - http:
+          method: any
+          path: /{proxy+}

@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  database:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: serstock
+    ports:
+      - 3306:3306
+    volumes:
+      - db-data:/var/lib/mysql
+   
+volumes:
+  db-data: 
