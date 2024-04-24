@@ -4,12 +4,13 @@ import {
   Entity,
   JoinColumn,
   JoinTable,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { OperationProduct } from './operation-products.entity';
 import { Product } from './product.entity';
 
 export enum OperationType {
@@ -44,7 +45,6 @@ export class Operation {
   @JoinColumn({ name: 'assigneeUserId' })
   assignee: User;
 
-  @ManyToMany(() => Product)
-  @JoinTable()
-  products: Product[];
+  @OneToMany(() => OperationProduct, (op) => op.operation)
+  products: OperationProduct[];
 }

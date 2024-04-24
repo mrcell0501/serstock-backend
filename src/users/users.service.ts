@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,23 +11,53 @@ export class UsersService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto) {
+    let createdUserId: number;
+    try {
+      const data = await this.userRepository.insert({
+        ...createUserDto,
+        isAdmin: false,
+      });
+
+      createdUserId = data.raw.insertId;
+    } catch (error) {
+      if (error?.code === 'ER_DUP_ENTRY') {
+        throw new HttpException(
+          'duplicated entry for the provided username',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw error;
+    }
+
+    return await this.findOne(createdUserId);
   }
 
   findAll() {
     return this.userRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    try {
+      return await this.userRepository.findOneByOrFail({ id });
+    } catch (error) {
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    await this.findOne(id);
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    try {
+      await this.userRepository.update(id, updateUserDto);
+    } catch (error) {
+      if (error?.code === 'ER_DUP_ENTRY') {
+        throw new HttpException(
+          'duplicated entry for the provided username',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw error;
+    }
   }
 }
