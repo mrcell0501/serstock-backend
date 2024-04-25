@@ -4,20 +4,16 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/@database/entities/user.entity';
 import { Repository } from 'typeorm';
-import { AuthService } from 'src/auth/auth.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-
-    private authService: AuthService,
   ) {}
   async create(createUserDto: CreateUserDto) {
-    const hashedPassword = await this.authService.encryptPassword(
-      createUserDto.password,
-    );
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
     let createdUserId: number;
     try {
@@ -51,6 +47,19 @@ export class UsersService {
     } catch (error) {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     }
+  }
+
+  async findOneByUsername(username: string) {
+    const { id, password } = await this.userRepository.findOne({
+      where: { username },
+      select: { password: true, id: true },
+    });
+
+    if (!password) {
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    }
+
+    return { id, username, password };
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
