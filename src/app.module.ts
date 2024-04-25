@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 import { OperationsModule } from './operations/operations.module';
+import { AuthModule } from './auth/auth.module';
 import databaseConfig from './@database/database.config';
 
 @Module({
@@ -21,6 +22,7 @@ import databaseConfig from './@database/database.config';
     UsersModule,
     ProductsModule,
     OperationsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
