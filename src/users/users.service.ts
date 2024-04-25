@@ -50,16 +50,10 @@ export class UsersService {
   }
 
   async findOneByUsername(username: string) {
-    const { id, password, isAdmin } = await this.userRepository.findOne({
+    return this.userRepository.findOne({
       where: { username },
-      select: { password: true, id: true, isAdmin: true },
+      select: { password: true, id: true, isAdmin: true, username: true },
     });
-
-    if (!password) {
-      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
-    }
-
-    return { id, username, password, isAdmin };
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

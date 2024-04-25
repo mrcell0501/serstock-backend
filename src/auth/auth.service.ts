@@ -17,9 +17,8 @@ export class AuthService {
 
   async login(dto: LoginDto) {
     const user = await this.usersService.findOneByUsername(dto.username);
-    const passwordsMatch = await bcrypt.compare(dto.password, user.password);
 
-    if (!passwordsMatch) {
+    if (!user || !(await bcrypt.compare(dto.password, user.password))) {
       throw new HttpException('fields do not match', HttpStatus.BAD_REQUEST);
     }
 
