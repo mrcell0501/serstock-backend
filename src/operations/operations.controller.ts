@@ -5,7 +5,7 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
+  Request,
 } from '@nestjs/common';
 import { OperationsService } from './operations.service';
 import { CreateOperationDto } from './dto/create-operation.dto';
@@ -16,8 +16,8 @@ export class OperationsController {
   constructor(private readonly operationsService: OperationsService) {}
 
   @Post()
-  create(@Body() createOperationDto: CreateOperationDto) {
-    return this.operationsService.create(1, createOperationDto);
+  create(@Body() createOperationDto: CreateOperationDto, @Request() req) {
+    return this.operationsService.create(req.user.sub, createOperationDto);
   }
 
   @Get()

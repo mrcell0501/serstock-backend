@@ -23,11 +23,13 @@ export class AuthService {
       throw new HttpException('fields do not match', HttpStatus.BAD_REQUEST);
     }
 
-    return {
-      accessToken: await this.jwtService.signAsync({
-        sub: user.id,
-        username: user.username,
-      }),
+    const tokenInfo = {
+      sub: user.id,
+      username: user.username,
+      isAdmin: user.isAdmin,
     };
+    const accessToken = await this.jwtService.signAsync(tokenInfo);
+
+    return { tokenInfo, accessToken };
   }
 }
