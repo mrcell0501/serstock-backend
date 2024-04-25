@@ -71,7 +71,7 @@ export class OperationsService {
     await this.operationRepository.manager.transaction(async (transaction) => {
       const operation = await transaction.save(Operation, {
         description: dto.description,
-        type: 'IN' as any,
+        type: dto.type,
         assigneeUserId: assigneeUserId,
       });
 
