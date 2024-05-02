@@ -25,7 +25,7 @@ export class UsersService {
 
       createdUserId = data.raw.insertId;
     } catch (error) {
-      if (error?.code === 'ER_DUP_ENTRY') {
+      if (error?.constraint?.startsWith('UQ_')) {
         throw new HttpException(
           'duplicated entry for the provided username',
           HttpStatus.BAD_REQUEST,
@@ -62,7 +62,7 @@ export class UsersService {
     try {
       await this.userRepository.update(id, updateUserDto);
     } catch (error) {
-      if (error?.code === 'ER_DUP_ENTRY') {
+      if (error?.constraint?.startsWith('UQ_')) {
         throw new HttpException(
           'duplicated entry for the provided username',
           HttpStatus.BAD_REQUEST,

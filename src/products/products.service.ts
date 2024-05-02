@@ -18,7 +18,7 @@ export class ProductsService {
       const data = await this.productRepository.insert(createProductDto);
       createdProductId = data.raw.insertId;
     } catch (error) {
-      if (error?.code === 'ER_DUP_ENTRY') {
+      if (error?.constraint?.startsWith('UQ_')) {
         throw new HttpException(
           'duplicated entry for the provided name',
           HttpStatus.BAD_REQUEST,
@@ -54,7 +54,7 @@ export class ProductsService {
       await this.findOne(id);
       await this.productRepository.update(id, updateProductDto);
     } catch (error) {
-      if (error?.code === 'ER_DUP_ENTRY') {
+      if (error?.constraint?.startsWith('UQ_')) {
         throw new HttpException(
           'duplicated entry for the provided name',
           HttpStatus.BAD_REQUEST,
