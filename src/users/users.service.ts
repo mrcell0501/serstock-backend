@@ -57,10 +57,9 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    await this.findOne(id);
-
     try {
       await this.userRepository.update(id, updateUserDto);
+      return await this.findOne(id);
     } catch (error) {
       if (error?.constraint?.startsWith('UQ_')) {
         throw new HttpException(

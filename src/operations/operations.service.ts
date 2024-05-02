@@ -127,7 +127,7 @@ export class OperationsService {
   }
 
   async update(id: number, dto: UpdateOperationDto) {
-    await this.findOne(id);
     await this.operationRepository.update(id, dto);
+    return await this.findOne(id);
   }
 }

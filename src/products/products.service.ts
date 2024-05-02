@@ -51,8 +51,8 @@ export class ProductsService {
 
   async update(id: number, updateProductDto: UpdateProductDto) {
     try {
-      await this.findOne(id);
       await this.productRepository.update(id, updateProductDto);
+      return await this.findOne(id);
     } catch (error) {
       if (error?.constraint?.startsWith('UQ_')) {
         throw new HttpException(
