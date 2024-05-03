@@ -18,6 +18,15 @@ async function bootstrap() {
       'This documentation aims to provide all explanations about this service',
     )
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+
+      'jwt',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

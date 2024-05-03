@@ -10,38 +10,37 @@ import {
 import { OperationsService } from './operations.service';
 import { CreateOperationDto } from './dto/create-operation.dto';
 import { UpdateOperationDto } from './dto/update-operation.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Operations')
 @Controller('operations')
 export class OperationsController {
   constructor(private readonly operationsService: OperationsService) {}
 
+  @ApiBearerAuth('jwt')
   @Post()
   create(@Body() createOperationDto: CreateOperationDto, @Request() req) {
     return this.operationsService.create(req.user.sub, createOperationDto);
   }
 
+  @ApiBearerAuth('jwt')
   @Get()
   findAll() {
     return this.operationsService.findAll();
   }
 
+  @ApiBearerAuth('jwt')
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.operationsService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.operationsService.findOne(id);
   }
 
+  @ApiBearerAuth('jwt')
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateOperationDto: UpdateOperationDto,
   ) {
-    return this.operationsService.update(+id, updateOperationDto);
+    return this.operationsService.update(id, updateOperationDto);
   }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.operationsService.remove(+id);
-  // }
 }
