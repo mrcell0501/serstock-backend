@@ -14,7 +14,7 @@ const config: DataSourceOptions = {
   entities: ['dist/@database/entities/*.entity.js'],
   migrations: ['dist/@database/migrations/*{.ts,.js}'],
   synchronize: false,
-  logging: true,
+  logging: false,
 };
 
 export default registerAs('database', () => config);

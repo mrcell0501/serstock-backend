@@ -16,7 +16,7 @@ export class ProductsService {
     let createdProductId: number;
     try {
       const data = await this.productRepository.insert(createProductDto);
-      createdProductId = data.raw.insertId;
+      createdProductId = data.raw?.[0]?.id;
     } catch (error) {
       if (error?.constraint?.startsWith('UQ_')) {
         throw new HttpException(
@@ -31,7 +31,7 @@ export class ProductsService {
   }
 
   async findAll() {
-    return this.productRepository.find();
+    return this.productRepository.find({ order: { name: 'ASC' } });
   }
 
   async findAllByIds(ids: number[]) {

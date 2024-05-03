@@ -23,7 +23,7 @@ export class UsersService {
         isAdmin: false,
       });
 
-      createdUserId = data.raw.insertId;
+      createdUserId = data.raw?.[0]?.id;
     } catch (error) {
       if (error?.constraint?.startsWith('UQ_')) {
         throw new HttpException(
@@ -37,8 +37,16 @@ export class UsersService {
     return await this.findOne(createdUserId);
   }
 
-  findAll() {
-    return this.userRepository.find();
+  async findAll() {
+    const users = await this.userRepository.find({
+      order: {
+        firstName: 'ASC',
+      },
+    });
+    return [
+      ...users.filter((u) => u.isAdmin),
+      ...users.filter((u) => !u.isAdmin),
+    ];
   }
 
   async findOne(id: number) {

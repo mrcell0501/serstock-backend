@@ -112,6 +112,7 @@ export class OperationsService {
   async findAll() {
     return await this.operationRepository.find({
       relations: ['assignee'],
+      order: { createdAt: 'DESC' },
     });
   }
 
